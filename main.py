@@ -10,11 +10,6 @@ PORT_NUMBER=6910
 # echo - for debugging
 # vikunja - for vikunja
 
-import logging
-
-# Enable debug logging
-logging.basicConfig(level=logging.DEBUG)
-
 @app.route('/echo', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def echo_alone():
     response = {
@@ -61,7 +56,7 @@ def echo_subpath(path):
 
 @app.route('/vikunja/<path:path>', methods=['GET', 'POST'])
 def vikunja_subpath(path):
-    app.logger.info(f"/vikunja/{path} requested!")
+    app.logger.info(f"🚨 /vikunja/{path} requested!")
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
@@ -93,7 +88,7 @@ def vikunja_subpath(path):
 
 @app.route('/vikunja/', methods=['GET', 'POST'])
 def vikunja_alone():
-    app.logger.info("/vikunja/ requested!")
+    app.logger.info("🚨 /vikunja/ requested!")
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
@@ -126,4 +121,4 @@ def vikunja_alone():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=PORT_NUMBER)
+    app.run(host='0.0.0.0', port=PORT_NUMBER, debug=True)
