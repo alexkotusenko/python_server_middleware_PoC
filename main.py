@@ -21,21 +21,73 @@ def echo():
     return jsonify(response)
 
 # vikunja
-@app.route('/vikunja/', methods=['GET'])
-def vikunja_proxy():
-    response = {
-        "host": request.headers["Host"],
-        "url": request.url
-    }
-    return jsonify(response)
+# @app.route('/vikunja/', methods=['GET'])
+# def vikunja_proxy():
+#     response = {
+#         "host": request.headers["Host"],
+#         "url": request.url
+#     }
+#     return jsonify(response)
 
-@app.route('/vikunja/<path:subpath>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def vikunja_proxy_subpath(subpath):
-    response = {
-        "url": request.url,
-        "subpath": "/"+subpath,
-    }
-    return jsonify(response)
+# @app.route('/vikunja/<path:subpath>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+# def vikunja_proxy_subpath(subpath):
+#     response = {
+#         "url": request.url,
+#         "subpath": "/"+subpath,
+#     }
+#     return jsonify(response)
+
+@app.route('/vikunja/<path:path>', methods=['GET', 'POST'])
+def proxy(path):
+    # 1. Forward the request to Vikunja
+    resp = requests.request(
+        method=request.method,
+        url=f"http://vikunja:3456/{path}",  # /login, /api/v1/info, etc.
+        headers={k:v for k,v in request.headers if k.lower() != 'host'},
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False
+    )
+    
+    # 2. Modify the response content
+    content = resp.text.replace('href="/', 'href="/vikunja/') \
+                      .replace('src="/', 'src="/vikunja/') \
+                      .replace('url("/', 'url("/vikunja/')
+    
+    # 3. Modify redirect headers (if present)
+    headers = dict(resp.headers)
+    if 'Location' in headers:
+        headers['Location'] = f"/vikunja{headers['Location']}"
+    
+    # 4. Return the modified response to the client
+    return Response(content, resp.status_code, headers)
+
+@app.route('/vikunja/', methods=['GET', 'POST'])
+def proxy():
+    # 1. Forward the request to Vikunja
+    resp = requests.request(
+        method=request.method,
+        url=f"http://vikunja:3456/",  # /login, /api/v1/info, etc.
+        headers={k:v for k,v in request.headers if k.lower() != 'host'},
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False
+    )
+    
+    # 2. Modify the response content
+    content = resp.text.replace('href="/', 'href="/vikunja/') \
+                      .replace('src="/', 'src="/vikunja/') \
+                      .replace('url("/', 'url("/vikunja/')
+    
+    # 3. Modify redirect headers (if present)
+    headers = dict(resp.headers)
+    if 'Location' in headers:
+        headers['Location'] = f"/vikunja{headers['Location']}"
+    
+    # 4. Return the modified response to the client
+    return Response(content, resp.status_code, headers)
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT_NUMBER)
