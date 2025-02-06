@@ -37,30 +37,13 @@ def echo_subpath(path):
     return jsonify(response)
 
 
-# vikunja
-# @app.route('/vikunja/', methods=['GET'])
-# def vikunja_proxy():
-#     response = {
-#         "host": request.headers["Host"],
-#         "url": request.url
-#     }
-#     return jsonify(response)
-
-# @app.route('/vikunja/<path:subpath>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-# def vikunja_proxy_subpath(subpath):
-#     response = {
-#         "url": request.url,
-#         "subpath": "/"+subpath,
-#     }
-#     return jsonify(response)
-
 @app.route('/vikunja/<path:path>', methods=['GET', 'POST'])
 def vikunja_subpath(path):
 
     # Exclude static assets from being processed by the middleware
     if path.startswith('assets/') or path == 'favicon.ico':
-        return Response(status=404)  # Let Nginx handle these requests
-    
+        return requests.get(f"http://46.38.245.74:3456/{path}").content
+
     app.logger.info(f"🚨 /vikunja/{path} requested!")
     # 1. Forward the request to Vikunja
     resp = requests.request(
