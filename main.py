@@ -77,6 +77,7 @@ def vikunja_subpath(path):
     # 3. Modify redirect headers (if present)
     headers = dict(resp.headers)
     headers['X-Flask-Handled'] = 'true'
+    headers.pop('Content-Encoding', None)  # Remove Content-Encoding if present
     if 'Location' in headers:
         app.logger.info(f"🔍 Redirect detected: {headers['Location']}")  # Debugging output
         if headers['Location'].startswith('/'):
