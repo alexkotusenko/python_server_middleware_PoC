@@ -56,6 +56,11 @@ def echo_subpath(path):
 
 @app.route('/vikunja/<path:path>', methods=['GET', 'POST'])
 def vikunja_subpath(path):
+
+    # Exclude static assets from being processed by the middleware
+    if path.startswith('assets/') or path == 'favicon.ico':
+        return Response(status=404)  # Let Nginx handle these requests
+    
     app.logger.info(f"🚨 /vikunja/{path} requested!")
     # 1. Forward the request to Vikunja
     resp = requests.request(
