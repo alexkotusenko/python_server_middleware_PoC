@@ -41,17 +41,23 @@ def echo_subpath(path):
 def vikunja_subpath(path):
 
     # Exclude static assets from being processed by the middleware
-    if path.startswith('assets/') or path == 'favicon.ico':
+    # if path.startswith('assets/') or path == 'favicon.ico':
+    #     return requests.get(f"http://46.38.245.74:3456/{path}").content
+    if path.startswith(('assets/', 'images/', 'icons/')) or path.endswith(('.png', '.jpg', '.jpeg', '.ico', '.svg')):
         return requests.get(f"http://46.38.245.74:3456/{path}").content
 
     app.logger.info(f"🚨 /vikunja/{path} requested!")
     # 1. Forward the request to Vikunja
+
+    headers = {k:v for k,v in request.headers.items() if k.lower() != 'host'}
+    headers['Accept-Encoding'] = 'gzip, deflate'
     resp = requests.request(
         method=request.method,
         # url=f"http://vikunja:3456/{path}",  # /login, /api/v1/info, etc.
         # url=f"http://localhost:3456/{path}", 
         url=f"http://46.38.245.74:3456/{path}",
-        headers={k:v for k,v in request.headers if k.lower() != 'host'},
+        #headers={k:v for k,v in request.headers if k.lower() != 'host'},
+        headers=headers,
         data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=False
@@ -81,12 +87,15 @@ def vikunja_subpath(path):
 def vikunja_alone():
     app.logger.info("🚨 /vikunja/ requested!")
     # 1. Forward the request to Vikunja
+    headers = {k:v for k,v in request.headers.items() if k.lower() != 'host'}
+    headers['Accept-Encoding'] = 'gzip, deflate'
     resp = requests.request(
         method=request.method,
         # url=f"http://vikunja:3456/",  # /login, /api/v1/info, etc.
         # url=f"http://localhost:3456/",
         url=f"http://46.38.245.74:3456",
-        headers={k:v for k,v in request.headers if k.lower() != 'host'},
+        #headers={k:v for k,v in request.headers if k.lower() != 'host'},
+        heders=headers,
         data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=False
