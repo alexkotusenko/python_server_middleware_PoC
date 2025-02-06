@@ -79,11 +79,11 @@ def vikunja_subpath(path):
     # 3. Modify redirect headers (if present)
     headers = dict(resp.headers)
     if 'Location' in headers:
-        print(f"🔍 Redirect detected: {headers['Location']}")  # Debugging output
+        app.logger.info(f"🔍 Redirect detected: {headers['Location']}")  # Debugging output
         if headers['Location'].startswith('/'):
             headers['Location'] = f"/vikunja{headers['Location']}"
         elif headers['Location'].startswith('/vikunja'):
-            print("🚨 Prevented duplicate /vikunja/")
+            app.logger.info("🚨 Prevented duplicate /vikunja/")
         else:
             headers['Location'] = headers['Location']  # Keep external URLs untouched
     
@@ -110,11 +110,11 @@ def vikunja_alone():
     # 3. Modify redirect headers (if present)
     headers = dict(resp.headers)
     if 'Location' in headers:
-        print(f"🔍 Redirect detected: {headers['Location']}")  # Debugging output
+        app.logger.info(f"🔍 Redirect detected: {headers['Location']}")  # Debugging output
         if headers['Location'].startswith('/'):
             headers['Location'] = f"/vikunja{headers['Location']}"
         elif headers['Location'].startswith('/vikunja'):
-            print("🚨 Prevented duplicate /vikunja/")
+            app.logger.info("🚨 Prevented duplicate /vikunja/")
         else:
             headers['Location'] = headers['Location']  # Keep external URLs untouched
 
