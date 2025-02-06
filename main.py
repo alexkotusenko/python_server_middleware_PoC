@@ -7,6 +7,9 @@ app = Flask(__name__)
 
 PORT_NUMBER=6910
 
+# echo - for debugging
+# vikunja - for vikunja
+
 @app.route('/echo', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def echo_alone():
     response = {
@@ -71,7 +74,13 @@ def vikunja_subpath(path):
     # 3. Modify redirect headers (if present)
     headers = dict(resp.headers)
     if 'Location' in headers:
-        headers['Location'] = f"/vikunja{headers['Location']}"
+        if headers['Location'].startswith('/'):
+            headers['Location'] = f"/vikunja{headers['Location']}"
+        elif headers['Location'].startswith('/vikunja'):
+            # Prevent double "/vikunja/vikunja/"
+            pass  # Do nothing
+        else:
+            headers['Location'] = headers['Location']  # Keep external URLs untouched
     
     # 4. Return the modified response to the client
     return Response(content, resp.status_code, headers)
@@ -96,8 +105,14 @@ def vikunja_alone():
     # 3. Modify redirect headers (if present)
     headers = dict(resp.headers)
     if 'Location' in headers:
-        headers['Location'] = f"/vikunja{headers['Location']}"
-    
+        if headers['Location'].startswith('/'):
+            headers['Location'] = f"/vikunja{headers['Location']}"
+        elif headers['Location'].startswith('/vikunja'):
+            # Prevent double "/vikunja/vikunja/"
+            pass  # Do nothing
+        else:
+            headers['Location'] = headers['Location']  # Keep external URLs untouched
+                
     # 4. Return the modified response to the client
     return Response(content, resp.status_code, headers)
 
