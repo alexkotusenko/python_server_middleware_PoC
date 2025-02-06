@@ -38,7 +38,7 @@ def echo():
 #     return jsonify(response)
 
 @app.route('/vikunja/<path:path>', methods=['GET', 'POST'])
-def proxy(path):
+def vikunja_subpath(path):
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
@@ -63,7 +63,7 @@ def proxy(path):
     return Response(content, resp.status_code, headers)
 
 @app.route('/vikunja/', methods=['GET', 'POST'])
-def proxy():
+def vikunja_alone():
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
