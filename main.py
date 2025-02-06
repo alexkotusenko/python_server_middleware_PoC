@@ -95,7 +95,7 @@ def vikunja_alone():
         # url=f"http://localhost:3456/",
         url=f"http://46.38.245.74:3456",
         #headers={k:v for k,v in request.headers if k.lower() != 'host'},
-        heders=headers,
+        headers=headers,
         data=request.get_data(),
         cookies=request.cookies,
         allow_redirects=False
