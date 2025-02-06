@@ -10,6 +10,11 @@ PORT_NUMBER=6910
 # echo - for debugging
 # vikunja - for vikunja
 
+import logging
+
+# Enable debug logging
+logging.basicConfig(level=logging.DEBUG)
+
 @app.route('/echo', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def echo_alone():
     response = {
