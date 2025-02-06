@@ -8,6 +8,9 @@ echo "--------$(date)--------" >> $LOG
 
 echo "[INFO] $LOG file touched    $(date)" >> $LOG
 
+echo "[INFO] running pip install flask"
+pip install flask
+
 echo "[INFO] pip list: $(pip list)"
 
 echo "[INFO] running ./main.py..."
