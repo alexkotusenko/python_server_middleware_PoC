@@ -43,8 +43,14 @@ def vikunja_subpath(path):
     # Exclude static assets from being processed by the middleware
     # if path.startswith('assets/') or path == 'favicon.ico':
     #     return requests.get(f"http://46.38.245.74:3456/{path}").content
+    #if path.startswith(('assets/', 'images/', 'icons/')) or path.endswith(('.png', '.jpg', '.jpeg', '.ico', '.svg')):
+    #    return requests.get(f"http://46.38.245.74:3456/{path}").content
     if path.startswith(('assets/', 'images/', 'icons/')) or path.endswith(('.png', '.jpg', '.jpeg', '.ico', '.svg')):
-        return requests.get(f"http://46.38.245.74:3456/{path}").content
+        r = requests.get(f"http://46.38.245.74:3456/{path}")
+        # Copy the upstream content type (or fallback to 'application/octet-stream')
+        content_type = r.headers.get('Content-Type', 'application/octet-stream')
+        return Response(r.content, status=r.status_code, headers={'Content-Type': content_type})
+    
 
     app.logger.info(f"🚨 /vikunja/{path} requested!")
     # 1. Forward the request to Vikunja
