@@ -60,7 +60,8 @@ def vikunja_subpath(path):
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
-        url=f"http://vikunja:3456/{path}",  # /login, /api/v1/info, etc.
+        # url=f"http://vikunja:3456/{path}",  # /login, /api/v1/info, etc.
+        url=f"http://localhost:3456/{path}", 
         headers={k:v for k,v in request.headers if k.lower() != 'host'},
         data=request.get_data(),
         cookies=request.cookies,
@@ -93,7 +94,8 @@ def vikunja_alone():
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
-        url=f"http://vikunja:3456/",  # /login, /api/v1/info, etc.
+        # url=f"http://vikunja:3456/",  # /login, /api/v1/info, etc.
+        url=f"http://localhost:3456/",
         headers={k:v for k,v in request.headers if k.lower() != 'host'},
         data=request.get_data(),
         cookies=request.cookies,
