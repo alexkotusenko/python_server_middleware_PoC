@@ -61,6 +61,7 @@ def echo_subpath(path):
 
 @app.route('/vikunja/<path:path>', methods=['GET', 'POST'])
 def vikunja_subpath(path):
+    app.logger.info(f"/vikunja/{path} requested!")
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
@@ -92,6 +93,7 @@ def vikunja_subpath(path):
 
 @app.route('/vikunja/', methods=['GET', 'POST'])
 def vikunja_alone():
+    app.logger.info("/vikunja/ requested!")
     # 1. Forward the request to Vikunja
     resp = requests.request(
         method=request.method,
