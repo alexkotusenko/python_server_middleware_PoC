@@ -8,7 +8,7 @@ app = Flask(__name__)
 PORT_NUMBER=6910
 
 @app.route('/echo', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def echo():
+def echo_alone():
     response = {
         "method": request.method,
         "url": request.url,
@@ -19,6 +19,20 @@ def echo():
         "data": request.data.decode('utf-8')
     }
     return jsonify(response)
+
+@app.route('/echo/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def echo_subpath(path):
+    response = {
+        "method": request.method,
+        "url": request.url,
+        "headers": dict(request.headers),
+        "args": request.args.to_dict(),
+        "form": request.form.to_dict(),
+        "json": request.get_json(silent=True),
+        "data": request.data.decode('utf-8')
+    }
+    return jsonify(response)
+
 
 # vikunja
 # @app.route('/vikunja/', methods=['GET'])
