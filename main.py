@@ -74,6 +74,7 @@ def vikunja_subpath(path):
     
     # 3. Modify redirect headers (if present)
     headers = dict(resp.headers)
+    headers['X-Flask-Handled'] = 'true'
     if 'Location' in headers:
         app.logger.info(f"🔍 Redirect detected: {headers['Location']}")  # Debugging output
         if headers['Location'].startswith('/'):
@@ -106,6 +107,7 @@ def vikunja_alone():
     
     # 3. Modify redirect headers (if present)
     headers = dict(resp.headers)
+    headers['X-Flask-Handled'] = 'true'
     if 'Location' in headers:
         app.logger.info(f"🔍 Redirect detected: {headers['Location']}")  # Debugging output
         if headers['Location'].startswith('/'):
